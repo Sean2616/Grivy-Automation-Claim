@@ -48,11 +48,7 @@ def claim():
     except:
         pass
     
-    try:
-        xpath_el('//button[@class="mat-focus-indicator btn-full-width btn-grivy redeem-btn mat-raised-button mat-button-base"]')
-        
-    except:
-        pass
+   
     sleep(2)
     try:
         xpath_el("//button[contains(@class,'redeem')]")
