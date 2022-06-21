@@ -66,7 +66,7 @@ def claim():
         pass
  
     try:
-        xpath_el('//*[text()="Tukarkan"]')
+        xpath_el('//*[text()="Tukarkan" or text()="Claim it"]')
     except:
         pass
     try:
