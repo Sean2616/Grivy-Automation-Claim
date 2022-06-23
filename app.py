@@ -18,7 +18,7 @@ cwd = os.getcwd()
 
 opts = webdriver.ChromeOptions()
 
-opts.headless = True
+opts.headless = False
 opts.add_argument('log-level=3') 
 dc = DesiredCapabilities.CHROME
 dc['loggingPrefs'] = {'driver': 'OFF', 'server': 'OFF', 'browser': 'OFF'}
@@ -36,7 +36,7 @@ def xpath_type(el,mount):
     return wait(browser,10).until(EC.presence_of_element_located((By.XPATH, el))).send_keys(mount)
 
 def xpath_el(el):
-    element_all = wait(browser,30).until(EC.presence_of_element_located((By.XPATH, el)))
+    element_all = wait(browser,10).until(EC.presence_of_element_located((By.XPATH, el)))
     
     return browser.execute_script("arguments[0].click();", element_all)
 
@@ -70,12 +70,12 @@ def claim():
     except:
         pass
     try:
-        element = wait(browser,15).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div > svg')))
+        element = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//div[@class="code-container"]')))
         element_voc = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//p[@class="barcode-value"]')))
-        element.screenshot(f'{email}_PART_2.png')
+        element.screenshot(f'{cwd}/result/{email}_PART_2.png')
  
-        print(f"[{time.strftime('%d-%m-%y %X')}] Success Get Voucher [ {element_voc.text} ]")
-        with open('sudah_redeem.txt','a') as f: f.write(f'{email}{element_voc.text}\n')
+        print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Success Get Voucher [ {element_voc.text} ]")
+        with open('sudah_redeem.txt','a') as f: f.write(f'{email}|{element_voc.text}\n')
         browser.quit()
     except:
         print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Failed Get Voucher")
@@ -95,8 +95,11 @@ def login_email():
         
     sleep(0.5)
     element.send_keys(Keys.ENTER) 
-    sleep(3)  
-    element = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//*[@id="password"]/div[1]/div/div[1]/input')))
+    sleep(3)
+    try:
+        element = wait(browser,15).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="password"]/div[1]/div/div[1]/input')))
+    except:
+        element = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//*[@id="password"]/div[1]/div/div[1]/input')))
     
     element.send_keys(password)
     sleep(0.5)
@@ -123,7 +126,7 @@ def open_browser(k):
  
     random_angka = random.randint(100,999)
     random_angka_dua = random.randint(10,99)
-    opts.add_argument(f"user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.{random_angka}.{random_angka_dua} Safari/537.36")
+    opts.add_argument(f"user-agent=Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Mobile Safari/537.36")
     browser = webdriver.Chrome(options=opts, desired_capabilities=dc)
     urls = "url.txt"
     urlsa = open(f"{cwd}/{urls}","r")
