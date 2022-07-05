@@ -39,7 +39,10 @@ def xpath_el(el):
     element_all = wait(browser,10).until(EC.presence_of_element_located((By.XPATH, el)))
     
     return browser.execute_script("arguments[0].click();", element_all)
-
+def xpath_fast(el):
+    element_all = wait(browser,10).until(EC.presence_of_element_located((By.XPATH, el)))
+    
+    return browser.execute_script("arguments[0].click();", element_all)
 def claim():
 
     try:
@@ -58,13 +61,17 @@ def claim():
         xpath_el("//button[contains(@class,'redeem')]")
      
     try:
-        xpath_el('//span[@class="checkmark"]')
-    
-        sleep(1)
+        xpath_fast('(//span[@class="checkmark"])[1]')
     except:
-         
         pass
- 
+    try:
+        xpath_fast('(//span[@class="checkmark"])[2]')
+    except:
+        pass
+    try:
+        xpath_fast('(//span[@class="checkmark"])[3]')
+    except:
+        pass
     try:
         xpath_el('//*[text()="Tukarkan" or text()="Claim it"]')
     except:
@@ -75,7 +82,7 @@ def claim():
         element.screenshot(f'{cwd}/result/{email}_PART_2.png')
  
         print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Success Get Voucher [ {element_voc.text} ]")
-        with open('sudah_redeem.txt','a') as f: f.write(f'{email}|{element_voc.text}\n')
+        with open('sudah_redeem.txt','a') as f: f.write(f'{element_voc.text}\n')
         browser.quit()
     except:
         print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Failed Get Voucher")
@@ -142,7 +149,7 @@ def open_browser(k):
         xpath_el('//button[@class="mat-focus-indicator mat-primary btn-full-width btn-grivy mat-raised-button mat-button-base"]')
     except:
         pass
-  
+    
     try:
         login_email()
     except Exception as e:
