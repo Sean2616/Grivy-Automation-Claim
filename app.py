@@ -77,7 +77,7 @@ def claim():
     except:
         pass
     try:
-        element = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//div[@class="code-container"]')))
+        element = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//div[@class="barcode"]')))
         element_voc = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//p[@class="barcode-value"]')))
         element.screenshot(f'{cwd}/result/{email}_PART_2.png')
  
