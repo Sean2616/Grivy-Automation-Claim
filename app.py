@@ -39,10 +39,7 @@ def xpath_el(el):
     element_all = wait(browser,10).until(EC.presence_of_element_located((By.XPATH, el)))
     
     return browser.execute_script("arguments[0].click();", element_all)
-def xpath_fast(el):
-    element_all = wait(browser,10).until(EC.presence_of_element_located((By.XPATH, el)))
-    
-    return browser.execute_script("arguments[0].click();", element_all)
+
 def claim():
 
     try:
@@ -61,28 +58,24 @@ def claim():
         xpath_el("//button[contains(@class,'redeem')]")
      
     try:
-        xpath_fast('(//span[@class="checkmark"])[1]')
+        xpath_el('//span[@class="checkmark"]')
+    
+        sleep(1)
     except:
+         
         pass
-    try:
-        xpath_fast('(//span[@class="checkmark"])[2]')
-    except:
-        pass
-    try:
-        xpath_fast('(//span[@class="checkmark"])[3]')
-    except:
-        pass
+ 
     try:
         xpath_el('//*[text()="Tukarkan" or text()="Claim it"]')
     except:
         pass
     try:
-        element = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//div[@class="barcode"]')))
+        element = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//div[@class="code-container"]')))
         element_voc = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//p[@class="barcode-value"]')))
         element.screenshot(f'{cwd}/result/{email}_PART_2.png')
  
         print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Success Get Voucher [ {element_voc.text} ]")
-        with open('sudah_redeem.txt','a') as f: f.write(f'{element_voc.text}\n')
+        with open('sudah_redeem.txt','a') as f: f.write(f'{email}|{element_voc.text}\n')
         browser.quit()
     except:
         print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Failed Get Voucher")
@@ -134,6 +127,8 @@ def open_browser(k):
     random_angka = random.randint(100,999)
     random_angka_dua = random.randint(10,99)
     opts.add_argument(f"user-agent=Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Mobile Safari/537.36")
+    opts.add_argument(r"--user-data-dir=C:\Users\rahul\AppData\Local\Google\Chrome\User Data\Default")
+    opts.add_argument(f'--profile-directory={email}')
     browser = webdriver.Chrome(options=opts, desired_capabilities=dc)
     urls = "url.txt"
     urlsa = open(f"{cwd}/{urls}","r")
@@ -147,16 +142,20 @@ def open_browser(k):
         pass
     try:
         xpath_el('//button[@class="mat-focus-indicator mat-primary btn-full-width btn-grivy mat-raised-button mat-button-base"]')
+        check_login = "false"
     except:
         pass
-    
-    try:
-        login_email()
-    except Exception as e:
-        print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Failed Login, Error: {e}")
-        with open('failed.txt','a') as f:
-            f.write('{0}|{1}\n'.format(email,password))
-        browser.quit()
+        
+    if check_login == "false":
+        try:
+            login_email()
+        except Exception as e:
+            print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Failed Login, Error: {e}")
+            with open('failed.txt','a') as f:
+                f.write('{0}|{1}\n'.format(email,password))
+            browser.quit()
+    else:
+        claim()         
 
 if __name__ == '__main__':
     global list_accountsplit
