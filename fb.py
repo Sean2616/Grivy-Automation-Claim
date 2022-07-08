@@ -136,6 +136,7 @@ def open_browser(k):
         #print('clicked3')
     except:
         pass
+    check_login = "false"
     try:
         xpath_el('//button[@class="mat-focus-indicator mat-primary btn-full-width btn-grivy mat-raised-button mat-button-base"]')
         check_login = "false"
