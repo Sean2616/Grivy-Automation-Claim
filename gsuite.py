@@ -70,8 +70,10 @@ def claim():
     except:
         pass
     try:
-        element = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//div[@class="code-container"]')))
+        xpath_el('//p[@class="tap"]')
         element_voc = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//p[@class="barcode-value"]')))
+        element = wait(browser,15).until(EC.presence_of_element_located((By.CLASS, '(//div[@class="code-container"])[2]')))
+        
         element.screenshot(f'{cwd}/result/{email}_PART_2.png')
  
         print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Success Get Voucher [ {element_voc.text} ]")
@@ -141,20 +143,18 @@ def open_browser(k):
         pass
     try:
         xpath_el('//button[@class="mat-focus-indicator mat-primary btn-full-width btn-grivy mat-raised-button mat-button-base"]')
-        check_login = "false"
+ 
     except:
         pass
-        
-    if check_login == "false":
-        try:
-            login_email()
-        except Exception as e:
-            print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Failed Login, Error: {e}")
-            with open('failed.txt','a') as f:
-                f.write('{0}|{1}\n'.format(email,password))
-            browser.quit()
-    else:
-        claim()         
+     
+    try:
+        login_email()
+    except Exception as e:
+        print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Failed Login, Error: {e}")
+        with open('failed.txt','a') as f:
+            f.write('{0}|{1}\n'.format(email,password))
+        browser.quit()
+             
 
 if __name__ == '__main__':
     global list_accountsplit
