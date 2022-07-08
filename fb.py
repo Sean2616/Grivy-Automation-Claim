@@ -89,23 +89,25 @@ def login_email():
     xpath_el("//span[contains(text(),'Facebook')]")
     sleep(5)
     browser.switch_to.window(browser.window_handles[1])
-
-    element = wait(browser,30).until(EC.element_to_be_clickable((By.ID, "email")))
-    element.send_keys(email)
-        
-    sleep(0.5)
-    element.send_keys(Keys.ENTER) 
-    sleep(3)
     try:
-        element = wait(browser,15).until(EC.element_to_be_clickable((By.ID, 'pass')))
+        element = wait(browser,1).until(EC.element_to_be_clickable((By.ID, "m_login_email")))
     except:
-        element = wait(browser,15).until(EC.presence_of_element_located((By.ID, 'pass')))
+        element = wait(browser,1).until(EC.element_to_be_clickable((By.ID, "email")))
+
+    element.send_keys(email)
+       
+ 
+    sleep(1)
+    try:
+        element = wait(browser,2).until(EC.element_to_be_clickable((By.ID, 'm_login_password')))
+    except:
+        element = wait(browser,1).until(EC.presence_of_element_located((By.ID, 'pass')))
     
     element.send_keys(password)
     sleep(0.5)
     element.send_keys(Keys.ENTER)
- 
-    sleep(5)
+    wait(browser,2).until(EC.presence_of_element_located((By.XPATH, '(//div[@role="button"])[2]'))).click()
+    
     browser.switch_to.window(browser.window_handles[0])
     print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Success Login")
     claim()
@@ -122,9 +124,8 @@ def open_browser(k):
  
     random_angka = random.randint(100,999)
     random_angka_dua = random.randint(10,99)
-    opts.add_argument(f"user-agent=Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Mobile Safari/537.36")
-    opts.add_argument(r"--user-data-dir=C:\Users\rahul\AppData\Local\Google\Chrome\User Data\Default")
-    opts.add_argument(f'--profile-directory={email}')
+    opts.add_argument(f"user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36")
+ 
     browser = webdriver.Chrome(options=opts, desired_capabilities=dc)
     urls = "url.txt"
     urlsa = open(f"{cwd}/{urls}","r")
