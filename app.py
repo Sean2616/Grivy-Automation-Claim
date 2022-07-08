@@ -86,29 +86,25 @@ def login_email():
     global element
     global browser
     
-    xpath_el("//span[contains(text(),'Google')]")
+    xpath_el("//span[contains(text(),'Facebook')]")
     sleep(5)
     browser.switch_to.window(browser.window_handles[1])
 
-    element = wait(browser,30).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#identifierId")))
+    element = wait(browser,30).until(EC.element_to_be_clickable((By.ID, "email")))
     element.send_keys(email)
         
     sleep(0.5)
     element.send_keys(Keys.ENTER) 
     sleep(3)
     try:
-        element = wait(browser,15).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="password"]/div[1]/div/div[1]/input')))
+        element = wait(browser,15).until(EC.element_to_be_clickable((By.ID, 'pass')))
     except:
-        element = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//*[@id="password"]/div[1]/div/div[1]/input')))
+        element = wait(browser,15).until(EC.presence_of_element_located((By.ID, 'pass')))
     
     element.send_keys(password)
     sleep(0.5)
     element.send_keys(Keys.ENTER)
-
-    try: 
-        wait(browser,5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#accept"))).click()
-    except:
-        pass
+ 
     sleep(5)
     browser.switch_to.window(browser.window_handles[0])
     print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Success Login")
