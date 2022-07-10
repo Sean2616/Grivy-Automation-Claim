@@ -18,7 +18,7 @@ cwd = os.getcwd()
 
 opts = webdriver.ChromeOptions()
 
-opts.headless = False
+opts.headless = True
 opts.add_argument('log-level=3') 
 dc = DesiredCapabilities.CHROME
 dc['loggingPrefs'] = {'driver': 'OFF', 'server': 'OFF', 'browser': 'OFF'}
@@ -41,7 +41,11 @@ def xpath_el(el):
     return browser.execute_script("arguments[0].click();", element_all)
 
 def claim():
-
+    try:
+        wait(browser,5).until(EC.presence_of_element_located((By.XPATH,'//button[@class="btn-grivy landing-btn"]'))).click()
+        #print('clicked3')
+    except:
+        pass
     try:
         xpath_el('//button[@class="mat-focus-indicator btn-full-width btn-submit mat-raised-button mat-button-base"]')
         
@@ -70,11 +74,9 @@ def claim():
     except:
         pass
     try:
-        xpath_el('//p[@class="tap"]')
+        element = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//div[@class="code-container"]')))
         element_voc = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//p[@class="barcode-value"]')))
-        element = wait(browser,15).until(EC.presence_of_element_located((By.CLASS, '(//div[@class="code-container"])[2]')))
-        
-        element.screenshot(f'{cwd}/result/{email}_PART_2.png')
+        element.screenshot(f'{cwd}/result/{email}.png')
  
         print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Success Get Voucher [ {element_voc.text} ]")
         with open('sudah_redeem.txt','a') as f: f.write(f'{email}|{element_voc.text}\n')
@@ -82,8 +84,6 @@ def claim():
     except:
         print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Failed Get Voucher")
         browser.quit()
-   
-
 def login_email():
     global element
     global browser
@@ -110,7 +110,10 @@ def login_email():
     try: 
         wait(browser,5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#accept"))).click()
     except:
-        pass
+        try:
+            wait(browser,0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#confirm"))).click()
+        except:
+            pass
     sleep(5)
     browser.switch_to.window(browser.window_handles[0])
     print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Success Login")
