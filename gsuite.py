@@ -30,7 +30,10 @@ opts.add_argument('--disable-blink-features=AutomationControlled')
 prefs = {"profile.default_content_setting_values.notifications" : 2}
 opts.add_experimental_option("prefs",prefs)
 opts.add_experimental_option('excludeSwitches', ['enable-logging'])
-
+def xpath_fast(el):
+    element_all = wait(browser,3).until(EC.presence_of_element_located((By.XPATH, el)))
+    
+    return browser.execute_script("arguments[0].click();", element_all)
 
 def xpath_type(el,mount):
     return wait(browser,10).until(EC.presence_of_element_located((By.XPATH, el))).send_keys(mount)
