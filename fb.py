@@ -58,11 +58,16 @@ def claim():
         xpath_el("//button[contains(@class,'redeem')]")
      
     try:
-        xpath_el('//span[@class="checkmark"]')
-    
-        sleep(1)
+        xpath_fast('(//span[@class="checkmark"])[1]')
     except:
-         
+        pass
+    try:
+        xpath_fast('(//span[@class="checkmark"])[2]')
+    except:
+        pass
+    try:
+        xpath_fast('(//span[@class="checkmark"])[3]')
+    except:
         pass
  
     try:
@@ -72,7 +77,7 @@ def claim():
     try:
         element = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//div[@class="code-container"]')))
         element_voc = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//p[@class="barcode-value"]')))
-        element.screenshot(f'{cwd}/result/{email}Indomaret.png')
+        element.screenshot(f'{cwd}/result/{email}Alfamart.png')
  
         print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Success Get Voucher [ {element_voc.text} ]")
         with open('sudah_redeem.txt','a') as f: f.write(f'{email}|{element_voc.text}\n')
@@ -106,18 +111,9 @@ def login_email():
     element.send_keys(password)
     sleep(0.5)
     element.send_keys(Keys.ENTER)
-    try:
-        wait(browser,2).until(EC.presence_of_element_located((By.XPATH, '(//div[@role="button"])[2]'))).click()
-        browser.switch_to.window(browser.window_handles[0])
-    except:
-        browser.close()
-        try:
-            browser.switch_to.window(browser.window_handles[0])
-            browser.refresh()
-            xpath_el("//span[contains(text(),'Facebook')]")
-            xpath_el('//*[@class="btn-grivy landing-btn"]')
-        except:
-            pass
+    wait(browser,2).until(EC.presence_of_element_located((By.XPATH, '(//div[@role="button"])[2]'))).click()
+    
+    browser.switch_to.window(browser.window_handles[0])
     print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Success Login")
     claim()
     
@@ -160,7 +156,6 @@ def open_browser(k):
             print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Failed Login, Error: {e}")
             with open('failed.txt','a') as f:
                 f.write('{0}|{1}\n'.format(email,password))
-             
             browser.quit()
     else:
         claim()         
