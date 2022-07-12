@@ -40,15 +40,24 @@ def xpath_el(el):
     
     return browser.execute_script("arguments[0].click();", element_all)
 
-def claim():
+def xpath_fast(el):
+    element_all = wait(browser,3).until(EC.presence_of_element_located((By.XPATH, el)))
+    
+    return browser.execute_script("arguments[0].click();", element_all)
 
+def claim():
+    try:
+        wait(browser,5).until(EC.presence_of_element_located((By.XPATH,'//button[@class="btn-grivy landing-btn"]'))).click()
+        #print('clicked3')
+    except:
+        pass
     try:
         xpath_el('//button[@class="mat-focus-indicator btn-full-width btn-submit mat-raised-button mat-button-base"]')
         
     except:
         pass
     
-   
+    
     sleep(2)
     try:
         xpath_el("//button[contains(@class,'redeem')]")
