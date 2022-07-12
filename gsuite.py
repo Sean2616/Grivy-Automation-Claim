@@ -47,6 +47,11 @@ def claim():
     except:
         pass
     try:
+        wait(browser,5).until(EC.presence_of_element_located((By.XPATH,'//button[@class="btn-grivy landing-btn"]'))).click()
+        #print('clicked3')
+    except:
+        pass
+    try:
         xpath_el('//button[@class="mat-focus-indicator btn-full-width btn-submit mat-raised-button mat-button-base"]')
         
     except:
