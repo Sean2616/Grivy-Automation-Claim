@@ -61,12 +61,17 @@ def claim():
         browser.refresh()
         xpath_el("//button[contains(@class,'redeem')]")
      
-    try:
-        xpath_el('//span[@class="checkmark"]')
-    
-        sleep(1)
+        try:
+        xpath_fast('(//span[@class="checkmark"])[1]')
     except:
-         
+        pass
+    try:
+        xpath_fast('(//span[@class="checkmark"])[2]')
+    except:
+        pass
+    try:
+        xpath_fast('(//span[@class="checkmark"])[3]')
+    except:
         pass
  
     try:
