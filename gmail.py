@@ -120,7 +120,7 @@ def login_email():
     element.send_keys(password)
     sleep(0.5)
     element.send_keys(Keys.ENTER)
-
+    input(f"[{time.strftime('%d-%m-%y %X')}] ENTER JIKA TELAH MEMASUKAN OTP DI CHROME: ")
     try: 
         wait(browser,5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#accept"))).click()
     except:
@@ -185,7 +185,8 @@ if __name__ == '__main__':
     myfile_akun = open(f"{cwd}/{file_list_akun}","r")
     akun = myfile_akun.read()
     list_accountsplit = akun.split("\n")
-    jumlah = int(input(f"[{time.strftime('%d-%m-%y %X')}] Multi Processing: "))
+ 
     #open_browser(list_accountsplit[0])
-    with Pool(jumlah) as p:  
-        p.map(open_browser, list_accountsplit)
+    for i in list_accountsplit:
+        open_browser(i)
+ 
