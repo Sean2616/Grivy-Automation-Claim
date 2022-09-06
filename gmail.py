@@ -19,18 +19,6 @@ cwd = os.getcwd()
 
 opts = webdriver.ChromeOptions()
 
-opts.headless = False
-opts.add_argument('log-level=3') 
-dc = DesiredCapabilities.CHROME
-dc['loggingPrefs'] = {'driver': 'OFF', 'server': 'OFF', 'browser': 'OFF'}
-opts.add_argument('--ignore-ssl-errors=yes')
-opts.add_argument("--start-maximized")
-#opts.add_argument("window-size=200,100")
-opts.add_argument('--ignore-certificate-errors')
-opts.add_argument('--disable-blink-features=AutomationControlled')
-prefs = {"profile.default_content_setting_values.notifications" : 2}
-opts.add_experimental_option("prefs",prefs)
-opts.add_experimental_option('excludeSwitches', ['enable-logging'])
 def xpath_fast(el):
     element_all = wait(browser,3).until(EC.presence_of_element_located((By.XPATH, el)))
     
@@ -145,7 +133,7 @@ def open_browser(k):
  
     random_angka = random.randint(100,999)
     random_angka_dua = random.randint(10,99)
-    opts.add_argument(f"user-agent=Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Mobile Safari/537.36")
+
     opts.add_argument(r"--user-data-dir=PATH_CHROME_PROFILE")
    
     opts.add_argument(f'--profile-directory={email}')
