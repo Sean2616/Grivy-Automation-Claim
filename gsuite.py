@@ -123,7 +123,7 @@ def login_email():
     try: 
         wait(browser,5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#accept"))).click()
     except:
-        try:
+        try: 
             wait(browser,0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#confirm"))).click()
         except:
             pass
