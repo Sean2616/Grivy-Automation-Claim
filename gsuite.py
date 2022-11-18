@@ -22,17 +22,26 @@ opts.headless = True
 opts.add_argument('log-level=3') 
 dc = DesiredCapabilities.CHROME
 dc['loggingPrefs'] = {'driver': 'OFF', 'server': 'OFF', 'browser': 'OFF'}
-opts.add_argument('--ignore-ssl-errors=yes')
-opts.add_argument("--start-maximized")
-#opts.add_argument("window-size=200,100")
-opts.add_argument('--ignore-certificate-errors')
+opts.add_argument('--disable-setuid-sandbox')
+opts.add_argument('--log-level=3') 
+opts.add_argument('--deny-permission-prompts')
+opts.add_argument('--disable-infobars')
+opts.add_argument('--no-sandbox')
+opts.add_argument('--ignore-certifcate-errors')
+opts.add_argument('--ignore-certifcate-errors-spki-list')
+opts.add_argument("--incognito")
+opts.add_argument('--no-first-run')
+opts.add_argument('--disable-dev-shm-usage')
+opts.add_argument("--disable-infobars")
 opts.add_argument('--disable-blink-features=AutomationControlled')
-prefs = {"profile.default_content_setting_values.notifications" : 2}
-opts.add_experimental_option("prefs",prefs)
+opts.add_experimental_option("useAutomationExtension", False)
+opts.add_experimental_option("excludeSwitches",["enable-automation"])
 opts.add_experimental_option('excludeSwitches', ['enable-logging'])
+opts.add_argument('--disable-notifications')
+
+
 def xpath_fast(el):
     element_all = wait(browser,3).until(EC.presence_of_element_located((By.XPATH, el)))
-    
     return browser.execute_script("arguments[0].click();", element_all)
 
 def xpath_type(el,mount):
@@ -44,15 +53,18 @@ def xpath_el(el):
     return browser.execute_script("arguments[0].click();", element_all)
 
 def claim():
+    
     try:
         wait(browser,5).until(EC.presence_of_element_located((By.XPATH,'//button[@class="btn-grivy landing-btn"]'))).click()
         #print('clicked3')
     except:
+        browser.screenshot('Err1.png')
         pass
     try:
         wait(browser,5).until(EC.presence_of_element_located((By.XPATH,'//button[@class="btn-grivy landing-btn"]'))).click()
         #print('clicked3')
     except:
+        browser.screenshot('Err2.png')
         pass
     try:
         xpath_el('//button[@class="mat-focus-indicator btn-full-width btn-submit mat-raised-button mat-button-base"]')
@@ -68,6 +80,7 @@ def claim():
     except:
         browser.refresh()
         xpath_el("//button[contains(@class,'redeem')]")
+        browser.screenshot('Err3.png')
      
     try:
         xpath_fast('(//span[@class="checkmark"])[1]')
@@ -97,41 +110,52 @@ def claim():
     except:
         print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Failed Get Voucher")
         browser.quit()
-def login_email():
-    global element
-    global browser
-    
-    xpath_el("//span[contains(text(),'Google')]")
-    sleep(5)
-    browser.switch_to.window(browser.window_handles[1])
-
-    element = wait(browser,30).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#identifierId")))
-    element.send_keys(email)
         
-    sleep(0.5)
-    element.send_keys(Keys.ENTER) 
-    sleep(3)
+def login_email():
     try:
-        element = wait(browser,15).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="password"]/div[1]/div/div[1]/input')))
-    except:
-        element = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//*[@id="password"]/div[1]/div/div[1]/input')))
-    
-    element.send_keys(password)
-    sleep(0.5)
-    element.send_keys(Keys.ENTER)
+        global element
+        global browser
+        
+        xpath_el("//span[contains(text(),'Google')]")
+        sleep(5)
+        browser.switch_to.window(browser.window_handles[1])
 
-    try: 
-        wait(browser,5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#accept"))).click()
-    except:
-        try: 
-            wait(browser,0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#confirm"))).click()
+        element = wait(browser,30).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#identifierId")))
+        element.send_keys(email)
+            
+        sleep(0.5)
+        element.send_keys(Keys.ENTER) 
+        sleep(3)
+        try:
+            element = wait(browser,15).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="password"]/div[1]/div/div[1]/input')))
         except:
-            pass
-    sleep(5)
-    browser.switch_to.window(browser.window_handles[0])
-    print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Success Login")
-    claim()
-    
+            element = wait(browser,15).until(EC.presence_of_element_located((By.XPATH, '//*[@id="password"]/div[1]/div/div[1]/input')))
+        
+        element.send_keys(password)
+        sleep(0.5)
+        element.send_keys(Keys.ENTER)
+
+        try: 
+            wait(browser,5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#accept"))).click()
+        except:
+            try: 
+                wait(browser,0.5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#confirm"))).click()
+            except:
+                pass
+        sleep(5)
+        browser.switch_to.window(browser.window_handles[0])
+        print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Success Login")
+        lanjut = "True"
+    except Exception as e:
+        print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Failed Login, Error: {e}")
+        with open('failed.txt','a') as f:
+            f.write('{0}|{1}\n'.format(email,password))
+        browser.quit()
+        lanjut = "False"
+        
+    if lanjut == "True":
+        claim()
+        
 def open_browser(k):
     
     global browser
@@ -141,7 +165,6 @@ def open_browser(k):
     k = k.split("|")
     email = k[0]
     password = k[1]
- 
     random_angka = random.randint(100,999)
     random_angka_dua = random.randint(10,99)
     opts.add_argument(f"user-agent=Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Mobile Safari/537.36")
@@ -162,14 +185,9 @@ def open_browser(k):
  
     except:
         pass
-     
-    try:
-        login_email()
-    except Exception as e:
-        print(f"[{time.strftime('%d-%m-%y %X')}] [ {email} ] Failed Login, Error: {e}")
-        with open('failed.txt','a') as f:
-            f.write('{0}|{1}\n'.format(email,password))
-        browser.quit()
+    
+    login_email()
+    
              
 
 if __name__ == '__main__':
